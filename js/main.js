@@ -1,19 +1,46 @@
-window.addEventListener('load', init);
+// // window.addEventListener('load', init);
+// const appID = 'f62f4455';
+// const appKey = 'bcdf960119082f9f9619017f183df110';
+// const Http = new XMLHttpRequest();
+// Http.withCredentials = true;
+// let data = null;
+// const url=' http://randomword.setgetgo.com/';
+// Http.addEventListener("readystatechange", function () {
+//     if (this.readyState === 4) {
+//       console.log(this.responseText);
+//     }
+//   });
+// Http.open("GET", url);
+// Http.setRequestHeader("app_id", appID);
+// Http.setRequestHeader("app_key", appKey);
+// Http.setRequestHeader("cache-control", "no-cache");
+// Http.setRequestHeader("Access-Control-Allow-Origin", "*");
+// // Http.setRequestHeader("Postman-Token", "5a5483de-d983-4926-969e-4e26d3bc91f1");
+// Http.send(data);
+// // Http.onreadystatechange=(e)=>{
+// // console.log(Http.responseText)
+// // }
 
 // Globals
-let time = 5;
+let time;
 let score = 0;
 let isPlaying;
 
 // Available Levels
-const levels = {
+const level = {
     easy: 5,
     medium: 3,
     hard: 1
 }
-
 // TO change level
-const currentLevel = levels.easy;
+const selectedLevel = document.querySelector('#currentLevel');
+let currentLevel = level[selectedLevel.value];
+selectedLevel.addEventListener('change', () =>{
+    currentLevel = level[selectedLevel.value];
+    seconds.innerHTML = currentLevel;
+    // time = currentLevel;
+    wordInput.value = '';
+});
 
 // DOM Elements
 const wordInput = document.querySelector('#word-input');
@@ -22,6 +49,9 @@ const scoreDisplay = document.querySelector('#score');
 const timeDisplay = document.querySelector('#time');
 const message = document.querySelector('#message');
 const seconds = document.querySelector('#seconds');
+seconds.innerHTML = currentLevel;
+wordInput.disabled = true;
+
 
 const words = [
   'hat',
@@ -53,12 +83,19 @@ const words = [
 
 // Initialize Game
 function init() {
+    wordInput.disabled = false;
+    wordInput.focus();
+    wordInput.placeholder = 'Write....';
+    time = currentLevel + 1;
+    wordInput.value = '';
+    message.innerHTML = 'Start!!!'
     //Show number of seconds in UI
     seconds.innerHTML = currentLevel;
     // Load word from array
     showWord(words);
     //Start matching on word input
     wordInput.addEventListener('input', startMatch);
+    startMatch();
     // Call countdown every second
     setInterval(countdown, 1000);
     //Check game status
